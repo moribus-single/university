@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { ProfilesController } from './profiles/profiles.controller';
 import { ProfilesModule } from './profiles/profiles.module';
 import { Profile } from './profiles/profiles.model';
+import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -26,8 +28,9 @@ import { Profile } from './profiles/profiles.model';
     }),
     UsersModule,
     ProfilesModule,
+    AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, AuthController],
   providers: [AppService],
 })
 export class AppModule { }
