@@ -22,6 +22,6 @@ export class Profile extends Model<Profile> {
     university: string;
 
     @ApiProperty({ example: 'GSB1234', description: 'Name of the group' })
-    @Column({ type: DataType.STRING })
-    group: string;
+    @Column({ type: DataType.STRING, allowNull: true })
+    group?: string;
 }

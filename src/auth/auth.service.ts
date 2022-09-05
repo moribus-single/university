@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
@@ -13,7 +13,10 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
 
-    async login(logInUserDto: LogInUserDto) { }
+    async login(logInUserDto: LogInUserDto) {
+        const user = await this.validateUser(logInUserDto);
+        return this.generateToken(user);
+    }
 
     async register(createUserDto: CreateUserDto) {
         const candidateByEmail = await this.userService.getUserByEmail(createUserDto.email);
@@ -23,7 +26,7 @@ export class AuthService {
             throw new HttpException('Username and email must be unique', HttpStatus.BAD_REQUEST);
         }
 
-        const hashPassword = await bcrypt.hash(createUserDto.password, process.env.SALT);
+        const hashPassword = await bcrypt.hash(createUserDto.password, Number(process.env.SALT));
         const user = await this.userService.createUser({ ...createUserDto, password: hashPassword });
 
         return this.generateToken(user);
@@ -34,5 +37,16 @@ export class AuthService {
         return {
             token: this.jwtService.sign(payload)
         };
+    }
+
+    private async validateUser(logInUserDto: LogInUserDto) {
+        const user = await this.userService.getUserByUsername(logInUserDto.username);
+        const passwordEquals = await bcrypt.compare(logInUserDto.password, user.password);
+
+        if (user && passwordEquals) {
+            return user;
+        }
+
+        throw new UnauthorizedException({ message: 'Invalid login or password' });
     }
 }
