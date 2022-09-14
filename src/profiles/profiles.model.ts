@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { Grades } from "../grades/grades.model";
 import { User } from "../users/users.model";
 
 @Table({ tableName: 'profile' })
@@ -24,4 +25,7 @@ export class Profile extends Model<Profile> {
     @ApiProperty({ example: 'GSB1234', description: 'Name of the group' })
     @Column({ type: DataType.STRING, allowNull: true })
     group?: string;
+
+    @HasMany(() => Grades)
+    grades?: Grades[];
 }

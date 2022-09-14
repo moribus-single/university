@@ -10,6 +10,9 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { Profile } from './profiles/profiles.model';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
+import { GradesController } from './grades/grades.controller';
+import { GradesModule } from './grades/grades.module';
+import { Grades } from './grades/grades.model';
 
 @Module({
   imports: [
@@ -23,14 +26,15 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Profile],
+      models: [User, Profile, Grades],
       autoLoadModels: true,
     }),
     UsersModule,
     ProfilesModule,
     AuthModule,
+    GradesModule,
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, GradesController],
   providers: [AppService],
 })
 export class AppModule { }
